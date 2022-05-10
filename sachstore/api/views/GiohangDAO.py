@@ -38,13 +38,14 @@ class GiohangViews(APIView):
           data = dictfetchall(cursor)
           return Response(data,status=status.HTTP_200_OK)
         else:
-          return Response("Chỉ tài khoản khách hàng mới được phép mua đồ!", status=status.HTTP_404_NOT_FOUND)
+          return Response("Chỉ tài khoản khách hàng mới được phép mua hàng!", status=status.HTTP_404_NOT_FOUND)
       else:
         return Response("Nhập thông tin khách hàng!", status=status.HTTP_400_BAD_REQUEST)
 
   def post(self, request, idKhachhang=None):
     with connection.cursor() as cursor:
       if idKhachhang:
+           
         serializer = SanphamtronggioSerializer(data=request.data)
         if serializer.is_valid():
           existedUser = Nguoidung.objects.filter(id=idKhachhang)
@@ -52,11 +53,21 @@ class GiohangViews(APIView):
           if not existedUser or not book:
             return Response("Không tìm thấy thông tin id (sản phẩm/khách hàng) này!", status=status.HTTP_404_NOT_FOUND)
           else:
-            giohangID = Giohang.objects.get(api_khachhang_id=idKhachhang).id
-            cursor.execute("INSERT INTO api_sanphamtronggio(`api_giohang_id`, `api_sach_id`, `soluong`) VALUES (%s, %s, %s)", [giohangID, request.data.get('api_sach'), request.data.get('soluong')])
-            connection.commit()
+            cursor.execute("select * from api_giohang where api_khachhang_id=%s", [idKhachhang])
+            giohang = dictfetchall(cursor)
+            if giohang:
+              giohangID = Giohang.objects.get(api_khachhang_id=idKhachhang).id
+              sanphamtronggio = Sanphamtronggio.objects.filter(api_giohang_id=giohangID, api_sach_id=request.data.get('api_sach'))
+              if(sanphamtronggio): 
+                return Response("Bạn đã có sản phẩm này trong giỏ", status=status.HTTP_406_NOT_ACCEPTABLE)
+              else:
+                cursor.execute("INSERT INTO api_sanphamtronggio(`api_giohang_id`, `api_sach_id`, `soluong`) VALUES (%s, %s, %s)", [giohangID, request.data.get('api_sach'), request.data.get('soluong')])
+                connection.commit()
+                return Response("Thêm sản phẩm vào giỏ thành công!", status=status.HTTP_201_CREATED)
 
-            return Response("Thêm sản phẩm vào giỏ thành công!", status=status.HTTP_201_CREATED)
+            else:
+              return Response("Chỉ tài khoản khách hàng mới được phép mua hàng!", status=status.HTTP_406_NOT_ACCEPTABLE)
+
         else:
           return Response("Kiểm tra lại thông tin đầu vào!", status=status.HTTP_400_BAD_REQUEST)
       else:

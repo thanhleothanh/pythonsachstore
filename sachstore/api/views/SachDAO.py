@@ -48,16 +48,16 @@ class SachViews(APIView):
         return Response("Không tìm thấy sách với id này!", status=status.HTTP_404_NOT_FOUND)
       else:
         sach = Sach.objects.get(id=id)
-        if request.data.get('hinhanh') is not None:
-          sach.hinhanh = request.data.get('hinhanh') 
-        if request.data.get('mota') is not None:
-          sach.mota = request.data.get('mota') 
-        if request.data.get('tensach') is not None:
-          sach.tensach = request.data.get('tensach') 
         if request.data.get('giasach') is not None:
-          sach.giasach = round(float(request.data.get('giasach')),2)
+          if(float(request.data.get('giasach')) <= 0):
+            return Response("Giá sách không hợp lệ", status=status.HTTP_400_BAD_REQUEST)
+          else:
+            sach.giasach = round(float(request.data.get('giasach')),2)
         if request.data.get('soluong') is not None:
-          sach.soluong = request.data.get('soluong') 
+          if(int(request.data.get('soluong')) <= 0):
+            return Response("Số lượng stock không hợp lệ", status=status.HTTP_400_BAD_REQUEST)
+          else:
+            sach.soluong = int(request.data.get('soluong')) 
         if request.data.get('namphathanh') is not None:
           sach.namphathanh = request.data.get('namphathanh') 
         sach.save()

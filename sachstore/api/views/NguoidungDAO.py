@@ -62,15 +62,15 @@ class NguoidungViews(APIView):
         return Response("Không tìm thấy người dùng", status=status.HTTP_404_NOT_FOUND)
       else:
         user = Nguoidung.objects.get(id=id)
-        if request.data.get('matkhau') is not None:
+        if request.data.get('matkhau') is not None and len(request.data.get('matkhau')) != 0:
           user.matkhau = request.data.get('matkhau') 
-        if request.data.get('hoten') is not None:
+        if request.data.get('hoten') is not None and len(request.data.get('hoten')) != 0:
           user.hoten = request.data.get('hoten') 
-        if request.data.get('diachi') is not None:
+        if request.data.get('diachi') is not None and len(request.data.get('diachi')) != 0:
           user.diachi = request.data.get('diachi') 
-        if request.data.get('sodienthoai') is not None:
+        if request.data.get('sodienthoai') is not None and len(request.data.get('sodienthoai')) != 0:
           user.sodienthoai = request.data.get('sodienthoai') 
-        if request.data.get('email') is not None:
+        if request.data.get('email') is not None and len(request.data.get('email')) != 0:
           user.email = request.data.get('email') 
         user.save()
         newUser = Nguoidung.objects.get(id=id)
@@ -96,7 +96,7 @@ class SigninViews(APIView):
           return Response("Sai tài khoản hoặc mật khẩu!", status=status.HTTP_406_NOT_ACCEPTABLE)
         else:
           if request.data.get('matkhau') == existedUser[0].get('matkhau'):
-            return Response(existedUser[0], status=status.HTTP_201_CREATED)
+            return Response(existedUser[0], status=status.HTTP_200_OK)
           else:
             return Response("Sai tài khoản hoặc mật khẩu!", status=status.HTTP_406_NOT_ACCEPTABLE)
       else:

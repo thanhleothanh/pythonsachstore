@@ -8,7 +8,7 @@ from .views.NhaxuatbanDAO import NhaxuatbanViews
 from .views.TheloaiDAO import TheloaiViews
 from .views.SachDAO import SachViews
 from .views.GiohangDAO import GiohangViews
-from .views.DonhangDAO import DonhangViews, DonhangcuatoiViews, SanphamdadatViews
+from .views.DonhangDAO import DonhangViews, DonhangcuatoiViews, SanphamdadatViews, ThongtinthanhtoanViews
 
 def apiOverview(request):
   return Response("api endpoint", safe=False)
@@ -31,7 +31,10 @@ urlpatterns = [
   path('orders/', DonhangViews.as_view(http_method_names=['post', 'get'])),
   path('orders/myorders/<int:idKhachhang>', DonhangcuatoiViews.as_view(http_method_names=['get'])),
   path('orders/<int:idDonhang>', DonhangViews.as_view(http_method_names=['get', 'patch', 'delete'])),
-  path('orders/<int:idDonhang>/items/', SanphamdadatViews.as_view(http_method_names=['get', 'post'])),
+  
+  path('orders/<int:idDonhang>/pay', ThongtinthanhtoanViews.as_view(http_method_names=[ 'post'])),
+
+  path('orders/<int:idDonhang>/items', SanphamdadatViews.as_view(http_method_names=['get', 'post'])),
 
   path('', apiOverview, name='api-overview'),
 ]

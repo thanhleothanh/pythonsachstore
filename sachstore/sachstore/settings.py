@@ -85,11 +85,11 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
 #########################
 # Cấu hình database ở dây
-        'NAME': '<dientendatabaseoday>'(tạo database mới fresh, rồi điền tên vào đây, run prj là nó tự tạo tables),
+        'NAME': 'dientendb',
 
-        'USER': '<dientaikhoanoday>'(thường là root),
+        'USER': 'dientaikhoanmysql',
 
-        'PASSWORD': '<dienmathkhauoday>'(mật khẩu của tìa khoản local mysql),
+        'PASSWORD': 'dienmatkhaumysql',
 # Cấu hình database ở dây
 ###########################
         'HOST': 'localhost',
